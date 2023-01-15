@@ -1,6 +1,6 @@
 package pgdp.teams;
 
-import java.util.Set;
+import java.util.*;
 
 public class Lineup {
 	private final int numberAttackers;
@@ -126,8 +126,30 @@ public class Lineup {
 	 */
 	public static Lineup computeOptimalLineup(Set<Penguin> players, int numberAttackers, int numberDefenders,
 			int numberSupporters) {
-		// TODO
-		return null;
+		// Create a priority queue to store all possible lineups and their scores
+		PriorityQueue<Lineup> lineups = new PriorityQueue<>(Comparator.comparingInt(Lineup::getTeamScore).reversed());
+
+		// Create a list of all players sorted by their skill
+		List<Penguin> sortedPlayers = new ArrayList<>(players);
+		sortedPlayers.sort((p1, p2) -> p2.attack + p2.defence + p2.support - (p1.attack + p1.defence + p1.support));
+
+		// Create all possible combinations of players and add them to the priority queue
+		for (int i = 0; i < sortedPlayers.size(); i++) {
+			Penguin attacker = sortedPlayers.get(i);
+			for (int j = i + 1; j < sortedPlayers.size(); j++) {
+				Penguin defender = sortedPlayers.get(j);
+				for (int k = j + 1; k < sortedPlayers.size(); k++) {
+					Penguin supporter = sortedPlayers.get(k);
+					if (--numberAttackers >= 0 && --numberDefenders >= 0 && --numberSupporters >= 0) {
+						lineups.add(new Lineup(new HashSet<>(Arrays.asList(attacker)), new HashSet<>(Arrays.asList(defender)), new HashSet<>(Arrays.asList(supporter))));
+					}
+					numberSupporters++;
+				}
+				numberDefenders++;
+			}
+			numberAttackers++;
+		}
+		return lineups.peek();
 	}
 
 	public static void main(String[] args) {
