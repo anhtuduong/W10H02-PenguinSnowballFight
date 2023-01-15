@@ -28,7 +28,57 @@ public class Lineup {
 	 * Computes the {@code teamSkill}, {@code teamSynergy} and {@code teamScore} for {@code this} {@code LineUp}
 	 */
 	private void computeScores() {
-		// TODO
+		teamScore = 0;
+		teamSkill = 0;
+		teamSynergy = 0;
+		for (Penguin p : attackers) {
+			teamScore += p.attack;
+			teamSkill += p.attack + p.defence + p.support;
+		}
+		for (Penguin p : defenders) {
+			teamScore += p.defence;
+			teamSkill += p.attack + p.defence + p.support;
+		}
+		for (Penguin p : supporters) {
+			teamScore += p.support;
+			teamSkill += p.attack + p.defence + p.support;
+		}
+		for (Penguin p1 : attackers) {
+			for (Penguin p2 : attackers) {
+				if (p1 != p2) {
+					teamSynergy += p1.getSynergy(p2);
+				}
+			}
+		}
+		for (Penguin p1 : defenders) {
+			for (Penguin p2 : defenders) {
+				if (p1 != p2) {
+					teamSynergy += p1.getSynergy(p2);
+				}
+			}
+		}
+		for (Penguin p1 : supporters) {
+			for (Penguin p2 : supporters) {
+				if (p1 != p2) {
+					teamSynergy += p1.getSynergy(p2);
+				}
+			}
+		}
+		for (Penguin p1 : attackers) {
+			for (Penguin p2 : defenders) {
+				teamSynergy += p1.getSynergy(p2);
+			}
+		}
+		for (Penguin p1 : attackers) {
+			for (Penguin p2 : supporters) {
+				teamSynergy += p1.getSynergy(p2);
+			}
+		}
+		for (Penguin p1 : defenders) {
+			for (Penguin p2 : supporters) {
+				teamSynergy += p1.getSynergy(p2);
+			}
+		}
 	}
 
 	public int getTeamScore() {
